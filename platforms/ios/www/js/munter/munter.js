@@ -117,8 +117,6 @@ msa.controller("MunterSystemCtrl", ["$scope", "MunterTrip",
 			return ($scope.munterTrip.elevation || $scope.munterTrip.distance || $scope.munterTrip.pitches) && $scope.munterTrip.rate 
                 && $scope.isValidElevation($scope.munterTrip.elevation) && $scope.isValidDistance($scope.munterTrip.distance) && $scope.isValidPitches($scope.munterTrip.pitches) && $scope.isValidRate($scope.munterTrip.rate);
 		};
-        
-    
     }
 ]);
 

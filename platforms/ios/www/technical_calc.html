@@ -12,12 +12,19 @@
     
     <!-- your stuff below -->
     <script type="text/javascript" src="js/munter/munter.js"></script>
-
+    <script type="text/javascript">
+        document.addEventListener ('touchmove', function(e) {
+                                   e.preventDefault();
+                                   }, false);
+                                   
+    </script>
+    
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, target-densityDpi=device-dpi" />
 </head>
 <body>
 
     <div class="container" ng-controller="MunterSystemCtrl">		
-		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<nav class="navbar navbar-inverse navbar-fixed-top titleBar" role="navigation">
 			<p class="navbar-text pull-left">r o c k - i c e - c l i m b i n g</p>
 			<ul class="nav nav-pills">
 				<li class="text-center pull-right"><a class="navBarText" href="technical_about.html">?</a></li>					
@@ -26,7 +33,6 @@
 		
         <div class="row">
             <p class="text-center">( estimation method:  simple )</p>
-            <br />
 			
 			<form class="form-horizontal">
 			
@@ -35,7 +41,7 @@
                 <div class="form-group" ng-class="{'has-error': !isValidRate(munterTrip.rate)}">
                     <label for="rate" class="col-xs-4 control-label text-right">rate</label>
                     <div class="col-xs-4">
-                        <input type="number" class="form-control text-right" id="rate" placeholder="0" ng-model="munterTrip.rate" />
+                        <input type="input number" class="form-control text-right" id="rate" placeholder="0" ng-model="munterTrip.rate" />
                     </div>
 					<div class="col-xs-4">
                         <p class="form-control pForm">min/pitch</p>
@@ -46,7 +52,7 @@
                 <div class="form-group" ng-class="{'has-error': !isValidPitches(munterTrip.pitches)}">
                     <label for="pitches" class="col-xs-4 control-label text-right">pitches</label>
                     <div class="col-xs-4">
-                        <input type="number" class="form-control text-right" id="elevation" placeholder="0" ng-model="munterTrip.pitches" />
+                        <input type="input number" class="form-control text-right" id="elevation" placeholder="0" ng-model="munterTrip.pitches" />
                     </div>
                 </div>
 				

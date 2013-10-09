@@ -12,12 +12,18 @@
     
     <!-- your stuff below -->
     <script type="text/javascript" src="js/munter/munter.js"></script>
-
+    <script type="text/javascript">
+        document.addEventListener ('touchmove', function(e) {
+                                   e.preventDefault();
+                                   }, false);
+    </script>
+    
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, target-densityDpi=device-dpi" />
 </head>
 <body>
 
     <div class="container" ng-controller="MunterSystemCtrl">		
-		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<nav class="navbar navbar-inverse navbar-fixed-top titleBar" role="navigation">
 			<p class="navbar-text pull-left">s c r a m b l i n g - s n o w c l i m b i n g</p>
 			<ul class="nav nav-pills">
 				<li class="text-center pull-right"><a class="navBarText" href="chauvin_about.html">?</a></li>					
@@ -26,7 +32,6 @@
 		
         <div class="row">
             <p class="text-center">( estimation method:  chauvin system )</p>
-            <br />
 			
 			<form class="form-horizontal">
 			
@@ -35,7 +40,7 @@
                 <div class="form-group" ng-class="{'has-error': !isValidRate(munterTrip.rate)}">
                     <label for="rate" class="col-xs-4 control-label text-right">rate</label>
                     <div class="col-xs-4">
-                        <input type="number" class="form-control text-right" id="rate" placeholder="0" ng-model="munterTrip.rate" />
+                        <input type="input number" class="form-control text-right" id="rate" placeholder="0" ng-model="munterTrip.rate" />
                     </div>
 					<div class="col-xs-4">
                         <p class="form-control pForm">min/60m</p>
@@ -46,7 +51,7 @@
                 <div class="form-group" ng-class="{'has-error': !isValidDistance(munterTrip.distance)}">
                     <label for="distance" class="col-xs-4 control-label text-right">distance</label>
                     <div class="col-xs-4">
-                        <input type="number" class="form-control text-right" id="distance" placeholder="0" ng-model="munterTrip.distance" />
+                        <input type="input number" class="form-control text-right" id="distance" placeholder="0" ng-model="munterTrip.distance" />
                     </div>
                     <div class="col-xs-4">
                         <select class="form-control" ng-model="munterTrip.distanceUnit" name="distanceUnit" ng-options="v for (k,v) in distanceUnits"></select>
@@ -57,7 +62,7 @@
                 <div class="form-group" ng-class="{'has-error': !isValidElevation(munterTrip.elevation)}">
                     <label for="elevation" class="col-xs-4 control-label text-right">elevation</label>
                     <div class="col-xs-4">
-                        <input type="number" class="form-control text-right" id="elevation" placeholder="0" ng-model="munterTrip.elevation" />
+                        <input type="input number" class="form-control text-right" id="elevation" placeholder="0" ng-model="munterTrip.elevation" />
                     </div>
                     <div class="col-xs-4">
                         <select class="form-control" ng-model="munterTrip.elevationUnit" name="elevationUnit" ng-options="v for (k,v) in elevationUnits"></select>
