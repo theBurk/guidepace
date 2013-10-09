@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html ng-app="msApp">
+<head>
+    <title>g u i d e | p a c e</title>
+
+    <!-- libs -->
+    <script type="text/javascript" src="js/lib/angular/angular.js"></script>
+    <script type="text/javascript" src="js/lib/angular/angular-route.js"></script>
+    <script type="text/javascript" src="js/lib/angular/angular-resource.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/lib/bootstrap/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="css/munter.css">
+    
+    <!-- your stuff below -->
+    <script type="text/javascript" src="js/munter/munter.js"></script>
+    <script type="text/javascript">
+        document.addEventListener ('touchmove', function(e) {
+            e.preventDefault();
+                                   }, false);
+        input.onfocus = function() {
+            window.scrollTo(0,0);
+        };
+    </script>
+     
+        
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, target-densityDpi=device-dpi" />
+</head>
+<body>
+
+    <div class="container" ng-controller="MunterSystemCtrl">		
+		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<p class="navbar-text pull-left">h i k i n g  - s k i i n g</p>
+			<ul class="nav nav-pills">
+				<li class="text-center pull-right"><a class="navBarText" href="munter_about.html">?</a></li>					
+			</ul>	
+		</nav>	
+		
+        <div class="row">
+            <p class="text-center">( estimation method:  munter system )</p>
+            <br />
+			
+			<div class="form-horizontal">
+			
+                <!-- munter rate -->
+                <!-- this will add the CSS class 'has-error' (Bootstrap) to the "div" if "rate" is invalid -->
+                <div class="form-group" ng-class="{'has-error': !isValidRate(munterTrip.rate)}">
+                    <label for="rate" class="col-xs-4 control-label text-right">rate</label>
+                    <div class="col-xs-4">
+                        <input type="number" class="form-control text-right" id="rate" placeholder="0" ng-model="munterTrip.rate" />
+                    </div>
+					<div class="col-xs-4">
+                        <p class="form-control pForm">units/hr</p>
+                    </div>
+                </div>
+
+                <!-- distance -->
+                <div class="form-group" ng-class="{'has-error': !isValidDistance(munterTrip.distance)}">
+                    <label for="distance" class="col-xs-4 control-label text-right">distance</label>
+                    <div class="col-xs-4"   ng-focus="window.scrollTo(0, 0);">
+                        <input type="number" class="form-control text-right" id="distance" placeholder="0" ng-model="munterTrip.distance"/>
+                    </div>
+                    <div class="col-xs-4">
+                        <select class="form-control" ng-model="munterTrip.distanceUnit" name="distanceUnit" ng-options="v for (k,v) in distanceUnits"></select>
+                    </div>
+                </div>
+
+				<!--  elevation -->
+                <div class="form-group" ng-class="{'has-error': !isValidElevation(munterTrip.elevation)}">
+                    <label for="elevation" class="col-xs-4 control-label text-right">elevation</label>
+                    <div class="col-xs-4">
+                        <input type="number" class="form-control text-right" id="elevation" placeholder="0" ng-model="munterTrip.elevation" ng-focus="window.scrollTo(0,0);" />
+                    </div>
+                    <div class="col-xs-4">
+                        <select class="form-control" ng-model="munterTrip.elevationUnit" name="elevationUnit" ng-options="v for (k,v) in elevationUnits"></select>
+                    </div>
+                </div>
+				
+				<p class="text-center text-danger" for="elevation" ng-hide="isValidEverything()">{{errorMessage()}}</p>
+				
+			</div>
+            
+			<br /> 
+			<!-- Output -->
+			<h4 ng-show="showTime()">time</h4>
+            <h2 class="text-center" ng-show="showTime()">{{time("munter")|prettyTime}}</h2>
+			
+		</div>
+
+		<nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
+				<ul class="nav nav-pills nav-justified" >
+					<li class="text-center active"><a class="navBarText" href="munter_calc.html">class<br>1 - 2</a></li>
+					<li class="text-center"><a class="navBarText" href="chauvin_calc.html">class<br>3 - 4</a></li>
+					<li class="text-center"><a class="navBarText" href="technical_calc.html">class<br>5</a></li>					
+				</ul>	
+		</nav>	
+    </div>
+
+</body>
+
+</html>
