@@ -5,8 +5,22 @@ body {
 	padding-right: 10px;
 }
 
+span{
+    width:20px;
+}
+
+.container{
+    padding-left:10px;
+  padding-right:10px;
+}
+
 .titleBar {
 	margin-top:20px;
+}
+
+.backgroundbar {
+    height:20px;
+    background-color:#ffffff;
 }
 
 .pForm {
@@ -19,6 +33,10 @@ body {
 
 h2{
 	margin-top: 0px;
+}
+
+.navbar-icons{
+    color:#eee;
 }
 
 .navBarText{
@@ -38,4 +56,66 @@ h2{
 	bottom:60px; 
 	padding-right:10px; 
 	padding-left: 10px;	
+}
+
+.terrainLabel{
+    color: black;
+}
+
+.keyboardRow{
+    padding-bottom:5px;
+}
+
+.time{
+    position:absolute;
+    width:220px;
+    height:70px;
+    padding-top:15px;
+  margin-left:-110px;
+  left:50%;
+    top:250px;
+    border: 1px solid #cccccc;
+   border-radius: 4px;
+   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+
+}
+
+
+
+.digitBtn{
+    /*width:38px;*/
+    width:45px;
+    
+    margin:0px;
+    padding:0px;
+    height:45px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.otherBtn{
+    /*width:80px;*/
+    width:45px;
+    height: 45px;
+    margin:0px;
+    padding:0px;
+    color:#444444;
+       -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.keyboard{
+   padding:5px;
+   width:302px;
+   margin-left:-151px;
+  left:50%;
+   margin-right:0px;
+   position: absolute;
+   bottom:65px;
+   background-color: #eeeeee;
+   border: 1px solid #cccccc;
+   border-radius: 4px;
+   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }

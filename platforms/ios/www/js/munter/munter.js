@@ -1,9 +1,10 @@
-msa = angular.module("msApp", ["ngResource"]);
+msa = angular.module("msApp", ["ngResource", "ngTouch"]);
 
 msa.controller("MunterSystemCtrl", ["$scope", "MunterTrip",
     function($scope, MunterTrip) {
-		// Munter System units		
-        
+		
+                                    
+        // Munter System units
 		$scope.elevationUnits = {
             m: "m",
             ft: "ft"
@@ -14,13 +15,13 @@ msa.controller("MunterSystemCtrl", ["$scope", "MunterTrip",
 			km: "km"
 		};
 		
-        // balling out of control with a model!
         // default selected...
         $scope.munterTrip = new MunterTrip({
             elevationUnit: $scope.elevationUnits.ft,
             distanceUnit: $scope.distanceUnits.mi,
         });
-
+                                    
+        $scope.munterTrip.view = "home";
 		
 		// calculates travel time in seconds using specified mode of calculation (munter / chauvin / techical)
 		$scope.time = function(mode) {
@@ -30,16 +31,16 @@ msa.controller("MunterSystemCtrl", ["$scope", "MunterTrip",
 			var time;
 			var units;
 			
-			switch(mode) {
-				case "munter":
+			switch($scope.munterTrip.view) {
+				case "munterCalc":
 					units = normalize(dist, $scope.munterTrip.distanceUnit)/1000 + Math.abs(normalize(elev, $scope.munterTrip.elevationUnit))/100;
 					time =  units / ($scope.munterTrip.rate/3600);
 					break;
-				case "chauvin":
+				case "chauvinCalc":
 					units = (normalize(dist, $scope.munterTrip.distanceUnit) + Math.abs(normalize(elev, $scope.munterTrip.elevationUnit)))/60;
 					time = units * ($scope.munterTrip.rate * 60);
 					break;
-				case "technical":
+				case "techCalc":
 					time = pit * ($scope.munterTrip.rate * 60);
 					break;
 			}
@@ -47,117 +48,226 @@ msa.controller("MunterSystemCtrl", ["$scope", "MunterTrip",
 			return time;
 		};
 		
+                                    
+        // true if all necessary inputs are present
+        $scope.showTime = function() {
+            var bool;
+            bool = ($scope.munterTrip.elevation || $scope.munterTrip.distance || $scope.munterTrip.pitches) && $scope.munterTrip.rate;
+            bool = bool && $scope.munterTrip.rate != 0 && $scope.munterTrip.rate != ".";
+            return bool;
+        };
+                    
 		
 		// --------------------------------------------------
-		//  Data validation
+		//  User input intperpretation & validation
 		// --------------------------------------------------
 		
-		var maxRate = 300;
-		var maxDistance = 50000;			
-		var maxElevation = 50000;			
-		var maxPitches = 100;				
-
-		
-		// test if inputs is valid
-		$scope.isValidRate = function(val) {
-			return !val || val=="." || (isNumber(val) && val>0 && val<=maxRate);
-		};
-		
-		$scope.isValidDistance = function(val) {
-            return !val || val=="." ||  (isNumber(val) && val>=0 && val<=maxDistance);
+                                    
+        $scope.munterTrip.targetInput = "rate";        // form control selected to recieve user input (initialize as rate)
+        
+                                    
+        // switches focus on user click to new target
+        $scope.shiftFocus = function() {
+        //    var foo = $scope.munterTrip.rate;
+        //    $scope.munterTrip.rate = 5;
+        //    $scope.munterTrip.rate = null;
+        //    $scope.munterTrip.targetInput = target;
+            
         };
-		
-		$scope.isValidElevation = function(val) {
-            return !val || val=="."  || val=="-" ||  (isNumber(val) && val<=maxElevation);
+                                    
+                                    
+        // formats current target input
+        $scope.style = function (target) {
+            if(target == $scope.munterTrip.targetInput) {
+                return { borderColor: "#66afe9",   borderWidth: "2px" } ;
+            }
         };
-		
-		$scope.isValidPitches = function(val) {
-            return !val || val=="." ||  (isNumber(val) && val>=0 && val<=maxPitches);
-        };		
+        
+        
+        // disables keyboard keys when appropriate (still needs work)
+        $scope.isDisabled = function (key) {
 
-		$scope.isValidEverything = function(){
-			return $scope.isValidRate($scope.munterTrip.rate) && $scope.isValidDistance($scope.munterTrip.distance) && $scope.isValidElevation($scope.munterTrip.elevation) && $scope.isValidPitches($scope.munterTrip.pitches);
-		};
+            var input;
 
-		
-		// compose error message based on which inputs are not valid
-		$scope.errorMessage = function() {
-			var errorText = "invalid ";
-			var errorPresent = false;
-			
-			if (!$scope.isValidRate($scope.munterTrip.rate)) {
-				errorPresent = true;
-				errorText = errorText + "rate";
-			}
-			
-			if (!$scope.isValidDistance($scope.munterTrip.distance)) {
-				errorText = (errorPresent == true) ? (errorText + ", "):errorText;
-				errorPresent = true;
-				errorText = errorText + "distance";
-			}
-	
-			if (!$scope.isValidElevation($scope.munterTrip.elevation)) {
-				errorText = (errorPresent == true) ? (errorText + ", "):errorText;
-				errorPresent = true;
-				errorText = errorText + "elevation";
-			}
-			
-			if (!$scope.isValidPitches($scope.munterTrip.pitches)) {
-				errorText = (errorPresent == true) ? (errorText + ", "):errorText;
-				errorPresent = true;
-				errorText = errorText + "pitches";
-			}
-			
-			return errorText;
-		};
+            switch ($scope.munterTrip.targetInput) {
+                case "rate":
+                    input = $scope.munterTrip.rate;
+                    break;
+                case "distance":
+                    input = $scope.munterTrip.distance;
+                    break;
+                case "elevation":
+                    input = $scope.munterTrip.elevation;
+                    break;
+                case "pitches":
+                    input = $scope.munterTrip.pitches;
+                    break;
+            }
 
-		
-		// true if all necessary inputs are present and valid
-		$scope.showTime = function() {
-			return ($scope.munterTrip.elevation || $scope.munterTrip.distance || $scope.munterTrip.pitches) && $scope.munterTrip.rate 
-                && $scope.isValidElevation($scope.munterTrip.elevation) && $scope.isValidDistance($scope.munterTrip.distance) && $scope.isValidPitches($scope.munterTrip.pitches) && $scope.isValidRate($scope.munterTrip.rate);
-		};
+                                    
+            switch (key) {
+                case ".":
+                    return  $scope.munterTrip.targetInput=="elevation"
+                        ||  $scope.munterTrip.targetInput=="pitches"
+                        ||  (input && input.toString().indexOf('.') != -1)
+                        ||  (input && $scope.munterTrip.targetInput=="rate" && input.toString().length==maxRateChar)
+                        ||  (input && $scope.munterTrip.targetInput=="distance" && input.toString().length==maxDistanceChar)
+                        ||  (input && $scope.munterTrip.targetInput=="elevation" && input.toString().length==maxElevationChar)
+                        ||  (input && $scope.munterTrip.targetInput=="pitches" && input.toString().length==maxPitchesChar);
+                    
+                case "-":
+                   return   $scope.munterTrip.targetInput=="rate"
+                        ||  $scope.munterTrip.targetInput=="distance"
+                        ||  $scope.munterTrip.targetInput=="pitches"
+                        ||  input
+                        ||  (input && input.toString().indexOf('-') != -1)
+                        ||  (input && $scope.munterTrip.targetInput=="rate" && input.toString().length==maxRateChar)
+                        ||  (input && $scope.munterTrip.targetInput=="distance" && input.toString().length==maxDistanceChar)
+                        ||  (input && $scope.munterTrip.targetInput=="elevation" && input.toString().length==maxElevationChar)
+                        ||  (input && $scope.munterTrip.targetInput=="pitches" && input.toString().length==maxPitchesChar);
+                                    
+                case "bksp":
+                    return  !input;
+                                    
+                case "d":
+                    return  (input && $scope.munterTrip.targetInput=="rate" && input.toString().length==maxRateChar)
+                        ||  (input && $scope.munterTrip.targetInput=="distance" && input.toString().length==maxDistanceChar)
+                        ||  (input && $scope.munterTrip.targetInput=="elevation" && input.toString().length==maxElevationChar)
+                        ||  (input && $scope.munterTrip.targetInput=="pitches" && input.toString().length==maxPitchesChar);
+
+            }
+            
+            return false;
+        };
+                        
+        var maxRateChar = 4;
+        var maxDistanceChar = 6;
+        var maxElevationChar = 6;
+        var maxPitchesChar = 4;
+        
+                                    
+        // interprets keyboard input & performs data validation
+        $scope.keyboardAction = function(key) {
+            
+            var input;
+                                    
+            switch ($scope.munterTrip.targetInput) {
+                case "rate":
+                    input = $scope.munterTrip.rate;
+                    break;
+                case "distance":
+                    input = $scope.munterTrip.distance;
+                    break;
+                case "elevation":
+                    input = $scope.munterTrip.elevation;
+                    break;
+                case "pitches":
+                    input = $scope.munterTrip.pitches;
+                    break;
+            }
+                                    
+                                
+            if (!input) {
+                input =  (key==".") ? "0." : key;
+            }
+             
+            else if (input && input==0 && input.toString().length==1 && key!="bksp") {
+                 input =  (key==".") ? "0." : key;
+            }
+
+            else if (key=="bksp") {
+                input = (input.toString.length==1) ? null : input.substring(0, input.length-1);
+            }
+
+            else {
+                input = "" + input + key;
+            }
+            
+                                    
+            switch ($scope.munterTrip.targetInput) {
+                case "rate":
+                    $scope.munterTrip.rate = input;
+                    break;
+                case "distance":
+                    $scope.munterTrip.distance = input;
+                    break;
+                case "elevation":
+                    $scope.munterTrip.elevation = input;
+                    break;
+                case "pitches":
+                    $scope.munterTrip.pitches = input;
+                    break;
+            }
+        
+        };
+        
+        
+        // switches distance unit
+        $scope.switchDistanceUnit = function() {
+            if($scope.munterTrip.distanceUnit == "mi") {
+                $scope.munterTrip.distanceUnit = "km";
+            }
+            else {
+                $scope.munterTrip.distanceUnit = "mi";
+            }
+        };
+           
+                                    
+        // switches elevation unit
+        $scope.switchElevationUnit = function() {
+            if($scope.munterTrip.elevationUnit == "ft") {
+                $scope.munterTrip.elevationUnit = "m";
+            }
+            else {
+                $scope.munterTrip.elevationUnit = "ft";
+            }
+        };
+                  
+                                    
+        // clears contents of inputs & resets units to default
+        $scope.clearInputs = function() {
+            $scope.munterTrip.targetInput = "rate";
+            $scope.munterTrip.distanceUnit = "mi";
+            $scope.munterTrip.elevationUnit = "ft";
+            $scope.munterTrip.rate = null;
+            $scope.munterTrip.distance = null;
+            $scope.munterTrip.elevation = null;
+            $scope.munterTrip.pitches = null;
+        }
+        
     }
 ]);
+
 
 // --------------------------------------------------
 //  Angular Models
 // --------------------------------------------------
-// Ok, so here's where things get a bit more complicated...
-// Earlier (above) I was touting the importance of MVC (Model-View-Controller) or MVVM (Model-View-View-Model) architectures. Cool.
-// So far we've only dealt with Views and Controllers; so what about Models? We've sort of hacked a model in place by using $scope,
-//  which is fine, but that doesn't scale. In essence, we want to encapsulate all of the parameters that define a time calculation
-//  into some sort of MunterTrip model, or something like that. We've already defined the components above (elevation, units, distance, etc.)
-//  and now we need to add some structure. Even though this is going to get confusing, its utility will become apparent when we start
-//  doing things like creating lists of MunterTrips, saving them to a database, loading them from a database (lookup CRUD), editing them,
-//  etc.
-// For the time being, don't worry about "$resource"...that will come up later when we integrate this with a database for persistence
+
 msa.factory("MunterTrip", ["$resource",
     function($resource) {
         return $resource("some/RESTful/url/:id", {id: "@id"});
     }
 ]);
 
+
 // --------------------------------------------------
 //  Angular Filters
 // --------------------------------------------------
-// Sweet! A simple display function for time! Notice that despite the fancy declaration as an AngularJS Filter, this is really just a function!
-// Also note that, because we've "jammed" this filter onto our "msa" object (i.e. our AngularJS Module/Application), it is available anywhere
-//  within our application and can be reused.
+
 msa.filter("prettyTime", function(){
     return function(time) {
         var h = Math.floor(time/3600);
         var m = Math.round((time - 3600*h)/60);
-        // returns a string of the format: hh:mm:ss
-        // the "join(<delimiter>)" function is a sweet native JS function on Arrays (things liek [el0, el1, ..., elN])
-        //   that concats the Array elements separated by the <delimiter> string that you can specify (in this case, a colon ":")
-        return h<(7*24) ? [h + " hr ", (m < 10 ? "0" : "") + m + "  min"].join("") : "way too much...";
+
+           return h<(7*24) ? [h + " hr ", (m < 10 ? "0" : "") + m + "  min"].join("") : "...forever";
     };
 });
+
 
 // --------------------------------------------------
 //  Utils
 // --------------------------------------------------
+
 // a function to convert from miles/kilometers/feet to meters
 function normalize(value, units) {
 	switch(units) {
@@ -171,20 +281,3 @@ function normalize(value, units) {
 			return value;
 	}
 }
-
-function isNumber(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n) ;
-}
-
-// --------------------------------------------------
-//  Mucking Around!
-// --------------------------------------------------
-msa.controller("BurkCtrl", ["$scope",
-    function($scope) {
-        $scope.mOptions = {
-            1: "blue",
-            2: "red",
-            3: "green"
-        };
-    }
-]);
