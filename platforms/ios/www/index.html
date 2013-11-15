@@ -21,10 +21,10 @@
 
 <!DOCTYPE html>
 <html ng-app="msApp">
+    
     <head>
         <title>g u i d e | p a c e</title>
         
-
         <!-- libs -->
         <script type="text/javascript" src="js/lib/angular/angular.js"></script>
         <script type="text/javascript" src="js/lib/angular/angular-route.js"></script>
@@ -34,7 +34,7 @@
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">app.initialize();</script>
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+
         
         <!-- your stuff below -->
         <script type="text/javascript" src="js/munter/munter.js"></script>
@@ -45,13 +45,22 @@
     
     <body>
         
-        <div class="container" ng-controller="MunterSystemCtrl">
+        <div class="container" ng-controller="MunterSystemCtrl" ng-click="munterTrip.welcom=false" >
             
-            <!-- opaque white spacer to sit behind status bar -->
-            <nav class="navbar navbar-fixed-top backgroundbar" role="navigation" ></nav>
+            <!-- opaque white backdrop to sit behind status bar -->
+            <nav id="statusBarBackdrop" class="navbar navbar-fixed-top" ng-hide="munterTrip.view=='home'" role="navigation"></nav>
+            
+            
+            <!-- grey out background when info box pops up -->
+            <div id="greyOut" ng-show="munterTrip.showRateInfo" ng-click="munterTrip.showRateInfo=false;"></div>
+            
+            
+            <!-- clear background when welcome box pops up -->
+            <div id="clearOut" ng-show="munterTrip.showWelcome" ng-click="munterTrip.showWelcome=false;"></div>
+            
             
             <!-- top navigation bar -->
-            <nav class="navbar navbar-inverse navbar-fixed-top titleBar" role="navigation" ng-hide="munterTrip.view=='home'">
+            <nav id="titleBar" class="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-hide="munterTrip.view=='home'">
                 <p class="navbar-text pull-left" ng-show="munterTrip.view=='munterCalc' || munterTrip.view=='munterAbout'">h i k i n g  - s k i i n g</p>
                 <p class="navbar-text pull-left" ng-show="munterTrip.view=='chauvinCalc' || munterTrip.view=='chauvinAbout'">s c r a m b l i n g - s n o w</p>
                 <p class="navbar-text pull-left" ng-show="munterTrip.view=='techCalc' || munterTrip.view=='techAbout'">r o c k - i c e - c l i m b i n g</p>
@@ -59,22 +68,29 @@
                 
                 <ul class="nav nav-pills navbar-icon">
                     <li ng-show="false"></li>
-                    <li class="text-center pull-right" ng-show="munterTrip.view=='munterCalc'"><a class="navBarText" ng-click="munterTrip.view='munterAbout'"><span class="glyphicon glyphicon-book"></span></a></li>
-                    <li class="text-center pull-right" ng-show="munterTrip.view=='chauvinCalc'"><a class="navBarText" ng-click="munterTrip.view='chauvinAbout'"><span class="glyphicon glyphicon-book"></span></a></li>
-                    <li class="text-center pull-right" ng-show="munterTrip.view=='techCalc'"><a class="navBarText" ng-click="munterTrip.view='techAbout'"><span class="glyphicon glyphicon-book"></span></a></li>
-                    <li class="text-center pull-right" ng-show="munterTrip.view=='munterAbout'"><a class="navBarText" ng-click="munterTrip.view='munterCalc'"><span class="glyphicon glyphicon-step-backward"></span></a></li>
-                    <li class="text-center pull-right" ng-show="munterTrip.view=='chauvinAbout'"><a class="navBarText" ng-click="munterTrip.view='chauvinCalc'"><span class="glyphicon glyphicon-step-backward"></span></a></li>
-                    <li class="text-center pull-right" ng-show="munterTrip.view=='techAbout'"></span><a class="navBarText" ng-click="munterTrip.view='techCalc'"><span class="glyphicon glyphicon-step-backward"></span></a></li>
-                    <li class="text-center pull-right" ng-show="munterTrip.view=='about'"><a class="navBarText" ng-click="munterTrip.view='home'"><span class="glyphicon glyphicon-step-backward"></span></a></li>
-                    <li class="text-center pull-right" ng-show="munterTrip.view!='home'"><a class="navBarText" ng-click="munterTrip.view='home'"><span class="glyphicon glyphicon-home"></span></a></li>
-
+                    <li class="pull-right" ng-show="munterTrip.view=='munterCalc'" ng-click="munterTrip.view='munterAbout'"><p class="navbar-text"><span class="glyphicon glyphicon-book linkIcon"></span></p></li>
+                    <li class="pull-right" ng-show="munterTrip.view=='chauvinCalc'" ng-click="munterTrip.view='chauvinAbout'"><p class="navbar-text"><span class="glyphicon glyphicon-book linkIcon"></span></p></li>
+                    <li class="pull-right" ng-show="munterTrip.view=='techCalc'" ng-click="munterTrip.view='techAbout'"><p class="navbar-text"><span class="glyphicon glyphicon-book linkIcon"></span></p></li>
+                    <li class="pull-right" ng-show="munterTrip.view=='munterAbout'" ng-click="munterTrip.view='munterCalc'; clearInputs();"><p class="navbar-text"><span class="glyphicon glyphicon-step-backward linkIcon"></span></p></li>
+                    <li class="pull-right" ng-show="munterTrip.view=='chauvinAbout'" ng-click="munterTrip.view='chauvinCalc'; clearInputs();"><p class="navbar-text"><span class="glyphicon glyphicon-step-backward linkIcon"></span></p></li>
+                    <li class="pull-right" ng-show="munterTrip.view=='techAbout'" ng-click="munterTrip.view='techCalc'; clearInputs();"><p class="navbar-text"><span class="glyphicon glyphicon-step-backward linkIcon"></span></p></li>
+                    <li class="pull-right" ng-show="munterTrip.view!='home'" ng-click="munterTrip.view='home'"><p class="navbar-text"><span class="glyphicon glyphicon-home linkIcon"></span></p></li>
                 </ul>
             </nav>
             
-            
+            <div id="welcomeBox" ng-show="munterTrip.showWelcome" ng-click="munterTrip.showWelcome=false">
+                
+                <p class="rateInfoTitle text-center" ><b>Welcome to Guide Pace</b></p>
+                    
+                <p class="welcomeLink text-center" ng-click="munterTrip.view='about'"><a>Click here for a quick overview.</a></p>
+                <p class="welcomeLink text-center" ng-click="showWelcome=false"><a>Click here to just get started.</a></p>
+                
+            </div>
+
+
             <!-- home page -->
-            <div class="row" ng-show="munterTrip.view=='home'">
-                <h2 class="text-center"> g u i d e | p a c e</h2>
+            <div class="row" ng-show="munterTrip.view=='home'" style:"z-index:50;">
+                <h2 id="gpTitle" class="text-center"> g u i d e | p a c e</h2>
                 <h3 class="text-center">-beta-</h3>
                 <br />
                 <p class="text-center"><a ng-click="munterTrip.view='about'">about</a></p>
@@ -82,21 +98,21 @@
                 <div id="terrainLabels">
                     <p class="text-center"><b>choose your terrain</b></p>
                     <div class="row">
-                        <div class="col-xs-4 text-center"><a class="terrainLabel" ng-click="munterTrip.view='munterCalc'; clearInputs();">|</a></div>
-                        <div class="col-xs-4 text-center"><a class="terrainLabel" ng-click="munterTrip.view='chauvinCalc'; clearInputs();">|</a></div>
-                        <div class="col-xs-4 text-center"><a class="terrainLabel" ng-click="munterTrip.view='techCalc'; clearInputs();">|</a></div>
+                        <div class="col-xs-4 text-center"><p ng-click="munterTrip.view='munterCalc'; clearInputs();">|</p></div>
+                        <div class="col-xs-4 text-center"><p ng-click="munterTrip.view='chauvinCalc'; clearInputs();">|</p></div>
+                        <div class="col-xs-4 text-center"><p ng-click="munterTrip.view='techCalc'; clearInputs();">|</p></div>
+                    </div>
+                    
+                    <div class="row"style:"z-index:50;">
+                        <div class="col-xs-4 text-center"><p ng-click="munterTrip.view='munterCalc'; clearInputs();">hiking</p></div>
+                        <div class="col-xs-4 text-center"><p ng-click="munterTrip.view='chauvinCalc'; clearInputs();">scrambling</p></div>
+                        <div class="col-xs-4 text-center"><p ng-click="munterTrip.view='techCalc'; clearInputs();">climbing</p></div>
                     </div>
                     
                     <div class="row">
-                        <div class="col-xs-4 text-center"><a class="terrainLabel" ng-click="munterTrip.view='munterCalc'; clearInputs();">hiking</a></div>
-                        <div class="col-xs-4 text-center"><a class="terrainLabel" ng-click="munterTrip.view='chauvinCalc'; clearInputs();">scrambling</div>
-                        <div class="col-xs-4 text-center"><a class="terrainLabel" ng-click="munterTrip.view='techCalc'; clearInputs();">climbing</div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-xs-4 text-center"><a class="terrainLabel" ng-click="munterTrip.view='munterCalc'; clearInputs();">|</a></div>
-                        <div class="col-xs-4 text-center"><a class="terrainLabel" ng-click="munterTrip.view='chauvinCalc'; clearInputs();">|</a></div>
-                        <div class="col-xs-4 text-center"><a class="terrainLabel" ng-click="munterTrip.view='techCalc'; clearInputs();">|</a></div>
+                        <div class="col-xs-4 text-center"><p ng-click="munterTrip.view='munterCalc'; clearInputs();">|</p></div>
+                        <div class="col-xs-4 text-center"><p ng-click="munterTrip.view='chauvinCalc'; clearInputs();">|</p></div>
+                        <div class="col-xs-4 text-center"><p ng-click="munterTrip.view='techCalc'; clearInputs();">|</p></div>
                     </div>
                 </div>
             </div>
@@ -114,67 +130,117 @@
                     <div class="form-group" ng-show="munterTrip.view=='munterCalc' || munterTrip.view=='chauvinCalc' || munterTrip.view=='techCalc'">
                         <label for="rate" class="col-xs-4 control-label text-right" >rate</label>
                         <div class="col-xs-4">
-                            <input type="input" class="form-control text-right" readonly id="rate" placeholder="0" ng-model="munterTrip.rate" ng-click="munterTrip.targetInput = 'rate'; shiftFocus();" ng-style="style('rate');"/>
+                            <input readonly type="input" class="form-control text-right" placeholder="0" ng-model="munterTrip.rate" ng-click="munterTrip.targetInput = 'rate';" ng-style="inputStyle('rate');"/>
                         </div>
-                        <div class="col-xs-4">
-                            <p class="form-control pForm" ng-show="munterTrip.view=='munterCalc'">units/hr</p>
-                            <p class="form-control pForm" ng-show="munterTrip.view=='chauvinCalc'">min/60m</p>
-                            <p class="form-control pForm" ng-show="munterTrip.view=='techCalc'">min/pitch</p>
+                        <div class="col-xs-4" ng-click="munterTrip.showRateInfo=!munterTrip.showRateInfo; munterTrip.targetInput='rate'">
+                            <p class="rateInfoLink form-control rateUnits" ng-show="munterTrip.view=='munterCalc'" ><u>units/hr</u></p>
+                            <p class="rateInfoLink form-control rateUnits" ng-show="munterTrip.view=='chauvinCalc'"><u>min/60m</u></p>
+                            <p class="rateInfoLink form-control rateUnits" ng-show="munterTrip.view=='techCalc'"><u>min/pitch</u></p>
                         </div>
                     </div>
                     
                     <!-- distance -->
-                    <div class="form-group" ng-show="munterTrip.view=='munterCalc' || munterTrip.view=='chauvinCalc'">
+                    <div class="form-group" ng-show="munterTrip.view=='munterCalc' || munterTrip.view=='chauvinCalc'"  ng-click="munterTrip.showRateInfo=false" >
                         <label for="distance" class="col-xs-4 control-label text-right">distance</label>
                         <div class="col-xs-4">
-                            <input type="input" class="form-control text-right" readonly id="distance" placeholder="0" ng-model="munterTrip.distance"  ng-click="munterTrip.targetInput = 'distance';" ng-style="style('distance');"/>
+                            <input readonly type="input" class="form-control text-right" placeholder="0" ng-model="munterTrip.distance"  ng-click="munterTrip.targetInput = 'distance';" ng-style="inputStyle('distance');"/>
                         </div>
                         <div class="col-xs-4">
-                            <input type="input" class="form-control" readonly id="distanceUnit" placeholder="0" ng-model="munterTrip.distanceUnit"  ng-click="switchDistanceUnit();"/>
+                            <input readonly type="input" class="form-control" ng-model="munterTrip.distanceUnit"  ng-click="switchDistanceUnit();"/>
                         </div>
                     </div>
                     
                     <!--  elevation -->
-                    <div class="form-group" ng-show="munterTrip.view=='munterCalc' || munterTrip.view=='chauvinCalc'">
+                    <div class="form-group" ng-show="munterTrip.view=='munterCalc' || munterTrip.view=='chauvinCalc'" ng-hide="munterTrip.view=='techCalc'"  ng-click="munterTrip.showRateInfo=false" >
                         <label for="elevation" class="col-xs-4 control-label text-right">elevation</label>
                         <div class="col-xs-4">
-                            <input type="input" class="form-control text-right" readonly id="elevation" placeholder="0" ng-model="munterTrip.elevation"  ng-click="munterTrip.targetInput = 'elevation';"  ng-style="style('elevation');"/>
+                            <input readonly type="input" class="form-control text-right" placeholder="0" ng-model="munterTrip.elevation"  ng-click="munterTrip.targetInput = 'elevation';" ng-style="inputStyle('elevation');"/>
                         </div>
                         <div class="col-xs-4">
-                            <input type="input" class="form-control" readonly id="elevationUnit" placeholder="0" ng-model="munterTrip.elevationUnit"  ng-click="switchElevationUnit();"/>
+                            <input readonly type="input" class="form-control" ng-model="munterTrip.elevationUnit"  ng-click="switchElevationUnit();"/>
                         </div>
                     </div>
                     
                     
                     <!--  pitches -->
-                    <div class="form-group" ng-show="munterTrip.view=='techCalc'">
+                    <div class="form-group" ng-show="munterTrip.view=='techCalc'" ng-click="munterTrip.showRateInfo=false">
                         <label for="pitches" class="col-xs-4 control-label text-right">pitches</label>
                         <div class="col-xs-4">
-                            <input type="input" class="form-control text-right" readonly id="pitches" placeholder="0" ng-model="munterTrip.pitches"  ng-click="munterTrip.targetInput = 'pitches';"  ng-style="style('pitches');"/>
+                            <input readonly type="input" class="form-control text-right" placeholder="0" ng-model="munterTrip.pitches"  ng-click="munterTrip.targetInput = 'pitches';"  ng-style="inputStyle('pitches');"/>
                         </div>
                     </div>
         
                 </div>
                 
-                <br />
-                <!-- Output -->
-                <div class="time">
-                    <h2 class="text-center" ng-show="showTime()">{{time()|prettyTime}}</h2>
-                    <h2 class="text-center" ng-show="!showTime()">-- hr -- min</h2>
-                    <h4 ng-show="!showTime()"></h4>
-                    <h2 class="text-center" ng-show="!showTime()"></h2>
+                
+                
+                <!-- time output -->
+                <div id="timeBlock" ng-style="timeStyle();" ng-swipe-left="swipeLeft(); clearInputs();" ng-swipe-right="swipeRight(); clearInputs();"  >
+                    <h2 class="text-center time" ng-show="showTime()">{{time()|prettyTime}}</h2>
+                    <h2 class="text-center time" ng-show="!showTime()">-- hr -- min</h2>
+                </div>
+
+
+
+
+                <!-- pop-up info box for rates -->
+                <div id="munterRateInfoBox" ng-show="munterTrip.showRateInfo && munterTrip.view=='munterCalc'" ng-click="munterTrip.showRateInfo=false">
+
+                        <p class="rateInfoTitle text-center" style="margin-bottom:0px; padding:5px" ><b>typical munter rates</b></p>
+
+                        <table class="table">
+                            <tr ng-click="munterTrip.rate=4">
+                                <td class="col-xs-8"><a>uphill on foot or skis</a></td>
+                                <td class="col-xs-4 text-center"><a>4</a></td>
+                            </tr>
+                            <tr ng-click="munterTrip.rate=6">
+                                <td class="col-xs-8"><a>flat or downhill on foot</a></td>
+                                <td class="col-xs-4 text-center"><a>6</a></td>
+                            </tr>
+                            <tr ng-click="munterTrip.rate=10">
+                                <td class="col-xs-8"><a>downhill on skis</a></td>
+                                <td class="col-xs-4 text-center"><a>10</a></td>
+                            </tr>
+                            <tr ng-click="munterTrip.rate=2">
+                                <td class="col-xs-8"><a>bushwhacking</a></td>
+                                <td class="col-xs-4 text-center"><a>2</a></td>
+                            </tr>
+                        </table>
+                  
                 </div>
                 
+                
+                
+                <!-- pop-up info box for rates -->
+                <div id="rateInfoBox" ng-show="munterTrip.showRateInfo && munterTrip.view=='chauvinCalc'" ng-click="munterTrip.showRateInfo=false">
+                        <p class="rateInfoTitle text-center" ><b>typical chauvin rates</b></p>
+                        
+                        <p class="rateInfoText">10 - 30 minutes per 60 meters </p>
+                        <p class="rateInfoText">(depending on terrain, skill and fitness)</p>
+           
+                </div>
+                    
+                    
+                    <!-- technical rates -->
+                <div id="rateInfoBox" ng-show="munterTrip.showRateInfo && munterTrip.view=='techCalc'" ng-click="munterTrip.showRateInfo=false">
+                        <p class="rateInfoTitle text-center" ><b>typical technical rates</b></p>
+                        
+                        <p class="rateInfoText">30 - 60+ minutes per pitch </p>
+                        <p class="rateInfoText">(depending on terrain, skill and fitness)</p>
+                    
+                </div>
+            
+
             </div>
             
             
             <!-- overall about section -->
-            <div class="row" ng-show="munterTrip.view=='about'">
-                <p class="text">Time planning is an essential skill in the mountains, whether you're alpine climbing, ski mountaineering,
+            <div class="row aboutSection" ng-show="munterTrip.view=='about'">
+                <p>Time planning is an essential skill in the mountains, whether you're alpine climbing, ski mountaineering,
                 backpacking or hunting.  When headed into familiar territory, it's easy; but when you're headed somewhere new,
                 this app will help you base your time plan in reality.</p>
                 
-                <p class="text">GuidePace consists of three calculators for estimating travel time in different types of terrain.
+                <p>GuidePace consists of three calculators for estimating travel time in different types of terrain.
                 You enter a rate, distance and elevation change, and it will estimate your travel time.  The rate you specify is important,
                 and it will depend on a variety of factors, including the characteristics of the terrain, party fitness and method of travel.
                 <b>Check out the 'about' section for each page to learn more about rates - you can access it by clicking on the '<span class="glyphicon glyphicon-book"></span>' in the top right corner. </b>
@@ -188,21 +254,21 @@
                         <th class="col-xs-3 text-center">class</td>
                         <th class="col-xs-4 text-center">description</td>
                     </tr>
-                    <tr ng-click="munterTrip.view='munterAbout'; clearInputs();">
+                    <tr ng-click="munterTrip.view='munterCalc';">
                         <td class="col-xs-3">munter</td>
                         <td class="col-xs-3 text-center">1, 2</td>
                         <td class="col-xs-6 text-center">hiking <br> skiing</td>
                     </tr>
-                    <tr ng-click="munterTrip.view='chauvinAbout'; clearInputs();">
+                    <tr ng-click="munterTrip.view='chauvinCalc';">
                         <td class="col-xs-3">chauvin</td>
                         <td class="col-xs-3 text-center">3, 4</td>
                         <td class="col-xs-6 text-center">scrambling<br> snow climbing</td>
                     </tr>
-                    <tr ng-click="munterTrip.view='techAbout'; clearInputs();">
+                    <tr ng-click="munterTrip.view='techCalc';">
                         <td class="col-xs-3">technical</td>
                         <td class="col-xs-3 text-center">5</td>
                         <td class="col-xs-6 text-center">rock climbing<br> ice climbing</td>
-                        <tr>
+                    </tr>
                     <tr>
                         <td class="col-xs-3"></td>
                         <td class="col-xs-3 text-center"></td>
@@ -210,31 +276,33 @@
                     </tr>
                 </table>
                 
-                <p class="text"> Many times you'll encounter a variety of terrain on a single trip; this is where it is useful to make a tour plan.
+                <p> Many times you'll encounter a variety of terrain on a single trip; this is where it is useful to make a tour plan.
                 Break the trip up into legs, and then use GuidePace to estimate the time required for each leg.  Also, if you want to change the units for distance or elevation, just tap them.</p>
                 
-                <p class="text">  Ski the corn when it's good, tag the summit before the storms roles in, get home in time for a beer!</p>
+                <p>  Ski the corn when it's good, tag the summit before the storms roles in, get home in time for a beer!</p>
                 <br />
                 
-                <p class="text text-center"><a href="mailto:highdawnalpinism@gmail.com">by High Dawn Alpinism</a></p>
+                <p class="text-center"><a href="mailto:highdawnalpinism@gmail.com">by High Dawn Alpinism</a></p>
                 <br />
             </div>
             
             
             <!--  munter about section -->
-            <div class="row" ng-show="munterTrip.view=='munterAbout'">
+            <div  ng-swipe-left="swipeLeft()" ng-swipe-right="swipeRight()"  class="row aboutSection" ng-show="munterTrip.view=='munterAbout'">
                 
-                <p class="text">Swiss guide Werner Munter developed the "Munter Method of Time Calculation"
+                <p>Swiss guide Werner Munter developed the "Munter Method of Time Calculation"
                 to estimate time for mountain travel in low angle terrain.
                 It is particularly useful for developing tour plans and estimating approach times
                 for alpine climbing, mountaineering and back-country skiing objectives.</p>
                 
-                <p  class="text">The equation is as follows, with time in hours, distance in kilometers and
+                <p>The equation is as follows, with time in hours, distance in kilometers and
                 elevation in meters:</p>
                 
-                <p class="text text-center"> <i> time = (distance + elevation/100) / rate</i></p>
+                <p class="text-center"> <i> time = (distance + elevation/100) / rate</i></p>
                 
-                <p class="text">For your time estimate to be accurate, an appropriate rate must be specified,
+                <p>Elevation change is considered as an absolute value.  When traveling downhill a higher rate should be used, but greater elevation change will still greater travel time, as is the case in the field.</p>
+                
+                <p>For your time estimate to be accurate, an appropriate rate must be specified,
 				which will depend on the characteristics of the terrain, method of travel and fitness of your party.
 				Some typical, moderate rates are given below.  With some experience, you'll get a better idea of what
                 to expect from yourself.</p>
@@ -247,7 +315,7 @@
                         <td class="col-xs-4 text-center">4</td>
                     </tr>
                     <tr ng-click="munterTrip.view='munterCalc'; clearInputs(); munterTrip.rate=6;">
-                        <th class="col-xs-8">downhill on foot</th>
+                        <th class="col-xs-8">flat or downhill on foot</th>
                         <td class="col-xs-4 text-center">6</td>
                     </tr>
                     <tr ng-click="munterTrip.view='munterCalc'; clearInputs(); munterTrip.rate=10;">
@@ -255,7 +323,7 @@
                         <td class="col-xs-4 text-center">10</td>
                     </tr>
                     <tr ng-click="munterTrip.view='munterCalc'; clearInputs(); munterTrip.rate=2;">
-                        <th class="col-xs-8">off-trail bushwhacking</th>
+                        <th class="col-xs-8">bushwhacking</th>
                         <td class="col-xs-4 text-center">2</td>
                     </tr>
                     <tr>
@@ -270,20 +338,20 @@
             
             
             <!-- chauvin system about section -->
-            <div class="row" ng-show="munterTrip.view=='chauvinAbout'">
+            <div  ng-swipe-left="swipeLeft()" ng-swipe-right="swipeRight()"  class="row aboutSection" ng-show="munterTrip.view=='chauvinAbout'">
                 
-                <p class="text">American mountain guide Marc Chauvin has developed a system for estimating
+                <p>American mountain guide Marc Chauvin has developed a system for estimating
                 travel time in 3rd and 4th class terrain.  It is also useful in other terrain with indistinct pitches, such as extended snow climbing.  </p>
                 
-                <p class="text"> His approach is to convert distance and elevation gain into an equivalent number of 60-meter pitches.
+                <p> His approach is to convert distance and elevation gain into an equivalent number of 60-meter pitches.
                 Sixty meters is the current standard length for a climbing rope.  Since most climbers are intimately familiar with this distance,
                 they will find it easier to estimate the amount of time required for a single pitch than for the climb as a whole.</p>
                 
-                <p  class="text">The equation is as follows, with time in hours, distance and elevation in meters, and rate is in minutes / 60m pitch:</p>
+                <p>The equation is as follows, with time in hours, distance and elevation in meters, and rate is in minutes / 60m pitch:</p>
                 
-                <p class="text text-center"> <i> time = (distance + elevation) * rate</i></p>
+                <p class="text-center"> <i> time = (distance + elevation) * rate</i></p>
                 
-                <p class="text">Typical rates in this type of terrain are 10 - 30 min/60m pitch, and will vary based on terrain, party skill and fitness.  </p>
+                <p>Typical rates in this type of terrain are 10 - 30 min/60m pitch, and will vary based on terrain, party skill and fitness.  </p>
                 
                 <br />
                 
@@ -291,13 +359,13 @@
             
             
             <!-- technical about section -->
-            <div class="row" ng-show="munterTrip.view=='techAbout'">
+            <div  ng-swipe-left="swipeLeft()" ng-swipe-right="swipeRight()"  class="row aboutSection" ng-show="munterTrip.view=='techAbout'">
                 
-                <p class="text">Roped climbing in technical terrain is typically broken up into pitches, which are up to one rope-length long.  A typical pitch may take anywhere from 30 minutes to an hour or more, depending on the difficulty of the terrain and skill of the party.  The equation used by this calculator is simply:</p>
+                <p>Roped climbing in technical terrain is typically broken up into pitches, which are up to one rope-length long.  A typical pitch may take anywhere from 30 minutes to an hour or more, depending on the difficulty of the terrain and skill of the party.  The equation used by this calculator is simply:</p>
                 
-                <p class="text text-center"> <i> time = pitches * rate</i></p>
+                <p class="text-center"> <i> time = pitches * rate</i></p>
                 
-                <p class="text">Technical decent times can also be estimated by substituting number of pitches for number of rappels.</p>
+                <p>Technical decent times can also be estimated by substituting number of pitches for number of rappels.</p>
                 
                 <br />
                
@@ -305,31 +373,30 @@
             
             
             <!-- keyboard -->
-            <div class="keyboard" ng-show="munterTrip.view=='munterCalc' || munterTrip.view=='chauvinCalc' || munterTrip.view=='techCalc'">
-                <div class="keyboardRow">
-                    <button type="button" class="btn btn-default digitBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(1);">1</button>
-                    <button type="button" class="btn btn-default digitBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(2);">2</button>
-                    <button type="button" class="btn btn-default digitBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(3);">3</button>
-                    <button type="button" class="btn btn-default digitBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(4);">4</button>
-                    <button type="button" class="btn btn-default digitBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(5);">5</button>
-                    <button type="button" class="btn btn-default digitBtn" ng-disabled="isDisabled('.');" ng-click="keyboardAction('.');">.</button>
-                    <!--<button type="button" class="btn btn-default digitBtn" ng-disabled="isDisabled('-');" ng-click="keyboardAction('-');">-</button>-->
+            <div id="keyboard"  ng-swipe-left="swipeLeft(); clearInputs();" ng-swipe-right="swipeRight(); clearInputs();"  ng-show="munterTrip.view=='munterCalc' || munterTrip.view=='chauvinCalc' || munterTrip.view=='techCalc'" >
+                <div id="keyboardTopRow">
+                    <button type="button" class="btn btn-default keyboardBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(1);">1</button>
+                    <button type="button" class="btn btn-default keyboardBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(2);">2</button>
+                    <button type="button" class="btn btn-default keyboardBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(3);">3</button>
+                    <button type="button" class="btn btn-default keyboardBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(4);">4</button>
+                    <button type="button" class="btn btn-default keyboardBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(5);">5</button>
+                    <button type="button" class="btn btn-default keyboardBtn" ng-disabled="isDisabled('.');" ng-click="keyboardAction('.');">.</button>
                 </div>
                 
                 <div>
-                    <button type="button" class="btn btn-default digitBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(6);">6</button>
-                    <button type="button" class="btn btn-default digitBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(7);">7</button>
-                    <button type="button" class="btn btn-default digitBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(8);">8</button>
-                    <button type="button" class="btn btn-default digitBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(9);">9</button>
-                    <button type="button" class="btn btn-default digitBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction('0');">0</button>
-                    <button type="button" class="btn btn-default otherBtn" ng-disabled="isDisabled('bksp');" ng-click="keyboardAction('bksp');"><span class="glyphicon glyphicon-arrow-left"></span></button>
+                    <button type="button" class="btn btn-default keyboardBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(6);">6</button>
+                    <button type="button" class="btn btn-default keyboardBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(7);">7</button>
+                    <button type="button" class="btn btn-default keyboardBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(8);">8</button>
+                    <button type="button" class="btn btn-default keyboardBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction(9);">9</button>
+                    <button type="button" class="btn btn-default keyboardBtn" ng-disabled="isDisabled('d');" ng-click="keyboardAction('0');">0</button>
+                    <button type="button" class="btn btn-default keyboardBtn" ng-disabled="isDisabled('bksp');" ng-click="keyboardAction('bksp');"><span class="glyphicon glyphicon-arrow-left"></span></button>
                 </div>
             </div>
             
             
             <!-- navigation bar -->
             <nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
-				<ul class="nav nav-pills nav-justified" >
+				<ul class="nav nav-pills nav-justified" style="">
 					<li ng-class="{active: munterTrip.view=='munterCalc' || munterTrip.view=='munterAbout'}"><a class="navBarText" ng-click="munterTrip.view='munterCalc'; clearInputs();">class<br>1 - 2</a></li>
 					<li ng-class="{active: munterTrip.view=='chauvinCalc' || munterTrip.view=='chauvinAbout'}"><a class="navBarText" ng-click="munterTrip.view='chauvinCalc'; clearInputs();">class<br>3 - 4</a></li>
 					<li ng-class="{active: munterTrip.view=='techCalc' || munterTrip.view=='techAbout'}"><a class="navBarText"  ng-click="munterTrip.view='techCalc'; clearInputs();">class<br>5</a></li>
